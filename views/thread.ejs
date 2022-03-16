@@ -1,0 +1,58 @@
+<script type="text/javascript" src="/js/chat.js"></script>
+<div id="thread_title">
+    <div class="flex_center">
+        <div class="flex_center blank_one">
+            <a href="/<%= category %>" >
+                <h2 id="thread_title_category"><%= category %></h2>
+            </a>
+        </div>
+        <div class="flex_center blank_one">
+            <h2 id="thread_title_thread"><%= thread %></h2>
+        </div>
+        <div class="blank_one"></div>
+    </div>
+    <div class="flex_center">
+        <div class="blank_one flex_center">
+            <h3 id="view_all">view all</h3>
+            <h3>/</h3>
+            <h3 id="view_50">view 50</h3>
+            <h3>/</h3>
+            <% if (!currentUser) { %>
+                <a href="/users/login?category=<%= category %>&thread=<%= thread %>" id="view_chat">
+                    <h3>Chat</h3>
+                </a>
+            <% } %>
+        </div>
+        <div class="blank_one flex_center">
+            <div class="flex_center">
+                <h4 id="new_message" >New Message!!</h4>
+            </div>
+        </div>
+        <div class="blank_one"></div>
+    </div>
+    <input id="chat_category" type="hidden" value="<%= category %>">
+    <input id="chat_thread" type="hidden" value="<%= thread %>">
+    <input id="thread_creater" type="hidden" value="<%= threadCreater %>">
+</div>
+
+<div id="thread_contents">
+    <div id="thread_contents_left">
+    </div>
+    <div id="thread_contents_center">
+        <div id="chat"></div>
+    </div>
+    <div id="thread_contents_right">
+        <% if (currentUser) { %>
+            <div id="thread_chat">
+                <h1 id="chat_title">Chat</h1>
+                <form id="chat_form">
+                    <textarea id="chat_input" type="text"></textarea><br/>
+                    <input id="chat_user_name" type="hidden" value="<%= currentUser.viewName %>">
+                    <input id="chat_user_id" type="hidden" value="<%= currentUser._id %>">
+                    <input type="submit" class="button" value="Send">
+                </form>
+                <div id="chat"></div>
+            </div>
+        <% } %>
+    </div>
+</div>

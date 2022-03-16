@@ -1,0 +1,30 @@
+<div>
+    <div id="category_title">
+        <h3><%= category %></h3>
+        <h2>Select Thread</h2>
+        <% if (currentUser) { %>
+            <a href="/<%= category %>/new">
+                <h3>+ Create new Thread</h3>
+            </a>
+        <% } else { %>
+            <a href="/users/login?category=<%= category %>" >
+                <h3>+ Create new Thread</h3>
+            </a>
+        <% } %>
+    </div>
+    <div id="category_contents">
+        <% if (threads !== undefined) { %>
+            <% threads.forEach(thread => { %>
+                <div class="category_thread_sort">
+                    <a href="/<%= category %>/<%= thread.title %>">
+                        <div class="category_thread">
+                            <div>
+                                <%= thread.title %>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+</div>

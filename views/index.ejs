@@ -1,0 +1,20 @@
+<div>
+    <div id="index_title">
+        <div>
+            <h1>Select Category</h1>
+        </div>
+    </div>
+    <div id="index_contents">
+        <% categorys.forEach(category => { %>
+            <div class="index_category_sort">
+                <a href="/<%= category.title %>">
+                    <div class="index_category">
+                        <div>
+                            <%= category.title %>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <% }) %>
+    </div>
+</div>

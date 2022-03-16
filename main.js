@@ -1,30 +1,33 @@
 "use strict"
 
+/*
+*/
+
 const express = require("express")
 const app = express()
 const router = require("./routes/index")
 const layouts = require("express-ejs-layouts")
-const passport = require("passport")
 const mongoose = require("mongoose")
-const connectFlash = require("express-flash")
-const User = require("./models/user")
-const expressSession = require("express-session")
 const methodOverride = require("method-override")
+const expressSession = require("express-session")
 const cookieParser = require("cookie-parser")
+const connectFlash = require("express-flash")
+const passport = require("passport")
+const User = require("./models/user")
 
 mongoose.Promise = global.Promise
-mongoose.connect("mongodb://0.0.0.0:27017/unnko")
-    .then(() => {console.log("successfully! connect mongoose")})
+mongoose.connect("mongodb://0.0.0.0:27017/unko_channel_2_1")
+    .then(() => {console.log("Successfully Connect MongoDb")})
     .catch(error => {throw error})
 
 app.set("port", process.env.PORT || 3000)
 app.set("view engine", "ejs")
-app.set("token", process.env.TOKEN || "unnkotoken")
+app.set("token", process.env.TOKEN || "helloToken0")
 
 app.use(express.static("public"))
 app.use(layouts)
 app.use(
-    express.urlencoded({
+    express.urlencoded( {
         extended: false
     })
 )
@@ -64,6 +67,23 @@ app.use((req, res, next) => {
 
 app.use("/", router)
 
+const list = ["ApexLegends", "MonsterHunter", "Splatoon", "ARK", "SmashBros", "Nier:Automata"]
+const Category = require("./models/category")
+
+Category.findOne({title: list[0]})
+    .then((category) => {
+        if (!category) {
+            list.forEach(category => {
+                const categoryParams = { title: category }
+                Category.create(categoryParams)
+                    .then(() => {console.log("successfully")})
+                    .catch(() => {console.log("error")})
+            })
+        }
+    })
+
 const server = app.listen(app.get("port"), () => {
-    console.log(`Start http://localhost:${app.get("port")}`)
+    console.log(`Server funning at http://localhost:${app.get("port")}`)
 })
+const io = require("socket.io")(server)
+require("./controllers/chatController")(io)

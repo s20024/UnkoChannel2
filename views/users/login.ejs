@@ -1,0 +1,23 @@
+<h2>Users Table</h2>
+<table>
+    <thead>
+    <tr>
+        <th>loginId</th>
+        <th>viewName</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% users.forEach(user => { %>
+        <tr>
+            <td>
+                <a href="<%= `/users/${user._id}` %>">
+                    <%= user.loginId %>
+                </a>
+            </td>
+            <td>
+                <%= user.viewName %>
+            </td>
+        </tr>
+    <% }) %>
+    </tbody>
+</table>

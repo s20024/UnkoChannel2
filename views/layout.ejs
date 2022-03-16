@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>Unko Channel</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div id="header">
+    <div class="blank_one"></div>
+    <div>
+        <a href="/" id="a_title">
+            <h1>Unko Channel</h1>
+        </a>
+    </div>
+    <div class="blank_one" id="header_right">
+        <div>
+            <% if (loggedIn) { %>
+                <div>
+                    Logged in
+                    <a href="/users/logout">
+                        <div>
+                            Logout
+                        </div>
+                    </a>
+                </div>
+            <% } else { %>
+                <div>
+                    <a href="/users/login?category=<%= category %>&thread=<%= thread %>">
+                        <div>
+                            Login
+                        </div>
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <%- body %>
+</div>
+</body>
+</html>
