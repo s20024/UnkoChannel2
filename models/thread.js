@@ -17,6 +17,9 @@ const threadSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "Category",
             required: true
+        },
+        message: {
+            type: Number
         }
     },
     { timestamps: true }

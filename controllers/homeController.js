@@ -7,8 +7,8 @@ const Message = require("../models/message")
 module.exports = {
     index: (req, res, next) => {
         Category.find({})
-            .then(categorys => {
-                res.locals.categorys = categorys
+            .then(categories => {
+                res.locals.categories = categories
                 next()
             })
             .catch(error => {next(error)})
@@ -23,8 +23,10 @@ module.exports = {
                 if (category) {
                     res.locals.category = category
                     Thread.find({category: category._id})
+                        .sort({updatedAt: -1})
                         .then(threads => {
                             res.locals.threads = threads
+                            console.log(threads)
                             res.render("category", {thread: ""})
                         })
                         .catch(error => {throw(error)})
@@ -93,7 +95,8 @@ module.exports = {
         const threadParams = {
             title: req.body.title,
             user: req.body.creater,
-            category: categoryId
+            category: categoryId,
+            message: 0
         }
         Thread.create(threadParams)
             .then(thread => {
@@ -174,8 +177,18 @@ module.exports = {
                 }
                 Message.create(messageParams)
                     .then(()=> {
-                        res.locals.redirect = `/${categoryId}/${threadId}`
-                        next()
+                        const threadUpdateParams = {
+                            message: thread.message + 1
+                        }
+                        Thread.findByIdAndUpdate(threadId, {$set: threadUpdateParams})
+                            .then(() => {
+                                res.locals.redirect = `/${categoryId}/${threadId}`
+                                next()
+                            })
+                            .catch(error => {
+                                console.log("error homeController->messageCreate->Thread.findByIdAndUpdate")
+                                throw error
+                            })
                     })
                     .catch(error => {
                         console.log("error homeController->messageCreate->Message.create")
@@ -252,46 +265,3 @@ module.exports = {
         else next()
     }
 }
-
-/*
-module.exports = {
-    deleteMessage: (req, res, next) => {
-        if (!req.user) {
-            res.locals.redirect = "/"
-            next()
-        }
-        const userId = req.user._id
-        const messageId = req.params.messageId
-        let deleteNum = 0
-
-        Thread.findOne({ _id: req.params.thread, user: userId })
-            .then(thread => {
-                if (thread) {
-                    deleteNum = 1
-                }
-                Message.findOne({ _id: messageId, user: userId})
-                    .then(message => {
-                        if (message) {
-                            deleteNum = 2
-                        }
-                        const messageParams = {
-                            content: "",
-                            delete: deleteNum
-                        }
-
-                        Message.findByIdAndUpdate(messageId, {
-                            $set: messageParams
-                        })
-                            .then(() => {
-                                res.locals.redirect = `/${req.params.category}/${req.params.thread}`
-                                next()
-                            })
-                            .catch(error => {
-                                next(error)
-                            })
-                    })
-            })
-    },
-
-}
-*/

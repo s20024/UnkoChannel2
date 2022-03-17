@@ -16,7 +16,7 @@ const passport = require("passport")
 const User = require("./models/user")
 
 mongoose.Promise = global.Promise
-mongoose.connect("mongodb://0.0.0.0:27017/unko_channel_2_3")
+mongoose.connect("mongodb://0.0.0.0:27017/unko_channel_2_4")
     .then(() => {console.log("Successfully Connect MongoDb")})
     .catch(error => {throw error})
 

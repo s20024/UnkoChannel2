@@ -17,9 +17,13 @@
             <% threads.forEach(thread => { %>
                 <div class="category_thread_sort">
                     <a href="/<%= category._id %>/<%= thread._id %>">
-                        <div class="category_thread">
+                        <div class="category_thread" style="text-align: center">
                             <div>
                                 <%= thread.title %>
+                                <div>
+                                    <% const updateDay = new Date(thread.updatedAt) %>
+                                    Last Update:<%= `${updateDay.getFullYear()}/${updateDay.getMonth() + 1}/${updateDay.getDate()}` %>
+                                </div>
                             </div>
                         </div>
                     </a>
@@ -28,3 +32,6 @@
         <% } %>
     </div>
 </div>
+
+<input class="time_test" type="hidden" value="<%= new Date(thread.updatedAt) %>">
+<script type="text/javascript" src="/js/test.js"></script>
