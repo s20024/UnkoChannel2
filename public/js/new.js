@@ -1,6 +1,8 @@
 const inputs = document.getElementsByClassName("new_input")
 
-const now = 1647509382887 + 100
+const id = new URL(window.location.href).pathname.split("/")[2]
+
+const now = JSON.parse(localStorage.getItem(id)) || 0
 
 for(let i = 0; i < inputs.length; i++) {
     const input = inputs[i]
@@ -9,3 +11,5 @@ for(let i = 0; i < inputs.length; i++) {
         test.style = {opacity: 1}
     }
 }
+
+localStorage.setItem(id, JSON.stringify(new Date().getTime()))
