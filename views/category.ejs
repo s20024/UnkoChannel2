@@ -1,13 +1,13 @@
 <div>
     <div id="category_title">
-        <h3><%= category %></h3>
+        <h3><%= category.title %></h3>
         <h2>Select Thread</h2>
         <% if (currentUser) { %>
-            <a href="/<%= category %>/new">
+            <a href="/<%= category._id %>/new">
                 <h3>+ Create new Thread</h3>
             </a>
         <% } else { %>
-            <a href="/users/login?category=<%= category %>" >
+            <a href="/users/login?category=<%= category._id %>" >
                 <h3>+ Create new Thread</h3>
             </a>
         <% } %>
@@ -16,7 +16,7 @@
         <% if (threads !== undefined) { %>
             <% threads.forEach(thread => { %>
                 <div class="category_thread_sort">
-                    <a href="/<%= category %>/<%= thread.title %>">
+                    <a href="/<%= category._id %>/<%= thread._id %>">
                         <div class="category_thread">
                             <div>
                                 <%= thread.title %>

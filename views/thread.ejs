@@ -1,13 +1,12 @@
-<script type="text/javascript" src="/js/chat.js"></script>
 <div id="thread_title">
     <div class="flex_center">
         <div class="flex_center blank_one">
-            <a href="/<%= category %>" >
-                <h2 id="thread_title_category"><%= category %></h2>
+            <a href="/<%= category._id %>" >
+                <h2 id="thread_title_category"><%= category.title %></h2>
             </a>
         </div>
         <div class="flex_center blank_one">
-            <h2 id="thread_title_thread"><%= thread %></h2>
+            <h2 id="thread_title_thread"><%= thread.title %></h2>
         </div>
         <div class="blank_one"></div>
     </div>
@@ -18,41 +17,52 @@
             <h3 id="view_50">view 50</h3>
             <h3>/</h3>
             <% if (!currentUser) { %>
-                <a href="/users/login?category=<%= category %>&thread=<%= thread %>" id="view_chat">
+                <a href="/users/login?category=<%= category._id %>&thread=<%= thread._id %>" id="view_chat">
+                    <h3>Chat</h3>
+                </a>
+            <% } else { %>
+                <a href="/<%= category._id %>/<%= thread._id %>/new" id="view_chat">
                     <h3>Chat</h3>
                 </a>
             <% } %>
         </div>
         <div class="blank_one flex_center">
             <div class="flex_center">
-                <h4 id="new_message" >New Message!!</h4>
             </div>
         </div>
         <div class="blank_one"></div>
     </div>
-    <input id="chat_category" type="hidden" value="<%= category %>">
-    <input id="chat_thread" type="hidden" value="<%= thread %>">
-    <input id="thread_creater" type="hidden" value="<%= threadCreater %>">
 </div>
 
 <div id="thread_contents">
     <div id="thread_contents_left">
     </div>
     <div id="thread_contents_center">
-        <div id="chat"></div>
+        <div id="chat">
+            <% messages.forEach((message, i) => { %>
+                <div class="messages" id="<%= message.viewName %>">
+                    <%# ごめんなさい。ここ汚いです。 %>
+                    <strong class="message <%= (currentUser && message.user.toString() === currentUser._id.toString())? "your_message" : "" %>">
+                        <%= i %> : <%= message.userName %>
+                    </strong><br />
+                    <% if (message.delete === 0) { %>
+                        <%= message.content %>
+                    <% } else if (message.delete === 1 ) { %>
+                        スレッド製作者に削除されました。
+                    <% } else { %>
+                        投稿者により削除されました。
+                    <% } %>
+
+                    <%# ここも汚いです。。。。。。；；%>
+                    <% if (currentUser && (message.user.toString() === currentUser._id.toString() || thread.user.toString() === currentUser._id.toString())) { %>
+                        <form class="delete_message_div" name="<%= message._id %>" method="POST" action="/<%= category._id %>/<%= thread._id %>/delete/<%= message._id %>">
+                            <button type="submit" class="delete_message">delete</button>
+                        </form>
+                    <% } %>
+                </div>
+            <% }) %>
+        </div>
     </div>
     <div id="thread_contents_right">
-        <% if (currentUser) { %>
-            <div id="thread_chat">
-                <h1 id="chat_title">Chat</h1>
-                <form id="chat_form">
-                    <textarea id="chat_input" type="text"></textarea><br/>
-                    <input id="chat_user_name" type="hidden" value="<%= currentUser.viewName %>">
-                    <input id="chat_user_id" type="hidden" value="<%= currentUser._id %>">
-                    <input type="submit" class="button" value="Send">
-                </form>
-                <div id="chat"></div>
-            </div>
-        <% } %>
     </div>
 </div>

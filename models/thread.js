@@ -7,11 +7,15 @@ const threadSchema = new Schema(
     {
         title: {
             type: String,
-            unique: true
         },
         user: {
             type: Schema.Types.ObjectId,
             ref: "User",
+            required: true
+        },
+        category: {
+            type: Schema.Types.ObjectId,
+            ref: "Category",
             required: true
         }
     },

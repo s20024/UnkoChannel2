@@ -1,13 +1,13 @@
 <% if (currentUser) { %>
     <div>
         <div class="flex_center">
-            <h2><%= category %></h2>
+            <h2><%= category.title %></h2>
         </div>
         <div class="flex_center">
             <h2><%= message %></h2>
         </div>
         <div class="flex_center">
-            <form action="/<%= category %>/create" method="POST">
+            <form action="/<%= category._id %>/create" method="POST">
                 <input type="hidden" name="creater" placeholder="Creater" value="<%= currentUser._id %>" autofocus><br/>
                 <input type="hidden" name="viewName" placeholder="viewName" value="<%= currentUser.viewName %>" autofocus><br/>
                 <label>Title:</label>

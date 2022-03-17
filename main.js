@@ -16,7 +16,7 @@ const passport = require("passport")
 const User = require("./models/user")
 
 mongoose.Promise = global.Promise
-mongoose.connect("mongodb://0.0.0.0:27017/unko_channel_2_1")
+mongoose.connect("mongodb://0.0.0.0:27017/unko_channel_2_3")
     .then(() => {console.log("Successfully Connect MongoDb")})
     .catch(error => {throw error})
 
@@ -85,5 +85,3 @@ Category.findOne({title: list[0]})
 const server = app.listen(app.get("port"), () => {
     console.log(`Server funning at http://localhost:${app.get("port")}`)
 })
-const io = require("socket.io")(server)
-require("./controllers/chatController")(io)

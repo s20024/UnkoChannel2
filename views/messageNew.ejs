@@ -1,0 +1,19 @@
+<div>
+    <div id="login_title">
+        <div id="login_title_title">
+            <h2>Message</h2>
+        </div>
+    </div>
+    <div id="login_contents">
+        <form action="/<%= category._id %>/<%= thread._id %>/create" method="POST">
+            <label>Message</label>
+            <textarea type="text" name="content" placeholder="Content" required autofocus>
+            </textarea><br/>
+            <input type="hidden" name="userId" placeholder="UserId" value="<%= currentUser._id %>">
+            <input type="hidden" name="userName" placeholder="UserName" value="<%= currentUser.name %>">
+            <button type="submit">送信</button>
+        </form>
+    </div>
+    <div id="login_under">
+    </div>
+</div>

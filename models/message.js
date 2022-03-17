@@ -20,6 +20,16 @@ const messageSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: "User",
             required: true
+        },
+        category: {
+            type: Schema.Types.ObjectId,
+            ref: "Category",
+            required: true
+        },
+        thread: {
+            type: Schema.Types.ObjectId,
+            ref: "Thread",
+            required: true
         }
     },
     { timestamps: true }

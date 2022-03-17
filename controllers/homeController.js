@@ -1,8 +1,8 @@
 "use strict"
 
 const Category = require("../models/category")
-const threadSchema = require("../schemas/threadSchema")
-const messageSchema = require("../schemas/messageSchema")
+const Thread = require("../models/thread")
+const Message = require("../models/message")
 const mongoose = require("mongoose")
 
 module.exports = {
@@ -18,82 +18,49 @@ module.exports = {
         res.render("index", {category: "", thread: ""})
     },
     category: (req, res, next) => {
-        const selectCategory = req.params.category
-        Category.findOne({ title:selectCategory })
+        const categoryId = req.params.categoryId
+        Category.findOne({_id: categoryId})
             .then(category => {
-                if(category) {
-                    res.locals.category = category.title
-                    const Thread = mongoose.model(selectCategory, threadSchema)
-                    Thread.find({ category: category.title })
+                if (category) {
+                    res.locals.category = category
+                    Thread.find({category: category._id})
                         .then(threads => {
                             res.locals.threads = threads
-                            res.render("category", {category: selectCategory, thread: ""})
+                            res.render("category", {thread: ""})
                         })
+                        .catch(error => {throw(error)})
                 } else {
                     res.locals.redirect = "/"
                     next()
                 }
-            })
-            .catch(error => {
-                console.log("error")
-                next(error)
-            })
-    },
-    threadNew: (req, res) => {
-        const selectCategory = req.params.category
-        res.locals.category = selectCategory
-        res.render("threadNew", {thread: "", message: "Create new Thread"})
-    },
-    threadCreate: (req, res, next) => {
-        const viewName = req.body.viewName
-        const threadParams = {
-            title: req.body.title,
-            user: req.body.creater
-        }
-        const Message = mongoose.model(`${req.params.category}-${req.body.title}`, messageSchema)
-        const messageAttributes = {
-            content: req.body.fmessage,
-            userName: viewName,
-            user: req.body.creater,
-            delete: 0
-        }
-        const m = new Message(messageAttributes)
-        m.save()
-        const Thread = mongoose.model(req.params.category, threadSchema)
-        Thread.create(threadParams)
-            .then(() => {
-                console.log("Create new category")
-                res.locals.redirect = `/${req.params.category}`
-                next()
-            })
-            .catch(error => {
-                // res.locals.redirect = `/${req.params.category}/new`
-                res.locals.message = "That Title is already used!"
-                const selectCategory = req.params.category
-                res.locals.category = selectCategory
-                // next()
-                res.render("threadNew")
             })
     },
     thread: (req, res, next) => {
-        const selectCategory = req.params.category
-        const selectThread = req.params.thread
-        Category.findOne({ title:selectCategory })
+        const categoryId = req.params.categoryId
+        const threadId = req.params.threadId
+
+        Category.findOne({_id: categoryId})
             .then(category => {
-                if(category) {
-                    const Thread = mongoose.model(selectCategory, threadSchema)
-                    Thread.findOne({ title: selectThread })
+                if (category) {
+                    Thread.findOne({ _id: threadId})
                         .then(thread => {
                             if (thread) {
-                                res.locals.category = selectCategory
-                                res.locals.thread = selectThread
-                                res.locals.threadCreater = thread.user
-                                res.locals.redirect = `/${selectCategory}/${selectThread}`
-                                res.render("thread", {category: selectCategory, thread: selectThread})
+                                Message.find({thread: threadId})
+                                    .then(messages => {
+                                        res.render("thread", {category: category, thread: thread, messages: messages})
+                                    })
+                                    .catch(error => {
+                                        console.log("error homeController->thread->Message.find")
+                                        throw error
+                                    })
                             } else {
-                                res.locals.redirect = `/${req.params.category}`
+                                res.locals.redirect = "/"
                                 next()
                             }
+                        })
+                        .catch(error => {
+                            console.log(`error for homeController->thread->Thread.findOne`)
+                            throw(error)
                         })
                 } else {
                     res.locals.redirect = "/"
@@ -101,11 +68,125 @@ module.exports = {
                 }
             })
             .catch(error => {
-                console.log("error")
-                next(error)
+                console.log("error homeController->thread->Category.find")
+                throw error
             })
     },
+    threadNew: (req, res, next) => {
+        const categoryId = req.params.categoryId
+        Category.findOne({_id: categoryId})
+            .then(category => {
+                if (category) {
+                    res.render("threadNew", {category: category, thread: "", message: "Create new Thread"})
+                } else {
+                    res.locals.redirect = "/"
+                    next()
+                }
+            })
+            .catch(error => {
+                console.log("error homeController->threadNew->Category.findOne")
+                throw error
+            })
+    },
+    threadCreate: (req, res, next) => {
+        const viewName = req.body.viewName
+        const categoryId = req.params.categoryId
+        const threadParams = {
+            title: req.body.title,
+            user: req.body.creater,
+            category: categoryId
+        }
+        Thread.create(threadParams)
+            .then(thread => {
+                const messageParams = {
+                    content: req.body.fmessage,
+                    userName: viewName,
+                    user: req.body.creater,
+                    delete: 0,
+                    category: thread.category,
+                    thread: thread._id
+                }
+                Message.create(messageParams)
+                    .then((message)=> {
+                        res.locals.redirect = `/${categoryId}`
+                        next()
+                    })
+                    .catch(error => {
+                        console.log("error homeController->threadCreate->Message.create")
+                        throw error
+                    })
+            })
+            .catch(error => {
+                console.log("error homeController->threadCreate->Thread.create")
+                throw error
+            })
+    },
+    messageNew: (req, res, next) => {
+        const categoryId = req.params.categoryId
+        const threadId = req.params.threadId
+        Category.findOne({_id: categoryId})
+            .then(category => {
+                if (category) {
+                    Thread.findOne({_id: threadId})
+                        .then(thread => {
+                            if (thread) {
+                                res.render("messageNew", {category: category, thread: thread})
+                            } else {
+                                res.locals.redirect = `/${categoryId}`
+                                next()
+                            }
+                        })
+                        .catch(error => {
+                            console.log("error homeController->messageNew->Thread.findOne")
+                            throw error
+                        })
+                } else {
+                    res.locals.redirect = "/"
+                    next()
+                }
+            })
+            .catch(error => {
+                console.log("error homeController->messageNew->Category.findOne")
+                throw error
+            })
+    },
+    messageCreate: (req, res, next) => {
+        const categoryId = req.params.categoryId
+        const threadId = req.params.threadId
+        Thread.findOne({_id: threadId})
+            .then(thread => {
+                const messageParams = {
+                    content: req.body.content,
+                    userName: req.body.userName,
+                    user: req.body.userId,
+                    delete: 0,
+                    category: thread.category,
+                    thread: thread._id
+                }
+                Message.create(messageParams)
+                    .then((message)=> {
+                        res.locals.redirect = `/${categoryId}/${threadId}`
+                        next()
+                    })
+                    .catch(error => {
+                        console.log("error homeController->messageCreate->Message.create")
+                        throw error
+                    })
+            })
+            .catch(error => {
+                console.log("error homeController->messageCreate->Thread.findOne")
+                throw error
+            })
+    },
+    redirectView: (req, res, next) => {
+        const redirectPath = res.locals.redirect
+        if (redirectPath !== undefined) res.redirect(redirectPath)
+        else next()
+    }
+}
 
+/*
+module.exports = {
     deleteMessage: (req, res, next) => {
         if (!req.user) {
             res.locals.redirect = "/"
@@ -113,11 +194,9 @@ module.exports = {
         }
         const userId = req.user._id
         const messageId = req.params.messageId
-        const Thread = mongoose.model(req.params.category, threadSchema)
-        const Message = mongoose.model(`${req.params.category}-${req.params.thread}`, messageSchema)
         let deleteNum = 0
 
-        Thread.findOne({ title: req.params.thread, user: userId })
+        Thread.findOne({ _id: req.params.thread, user: userId })
             .then(thread => {
                 if (thread) {
                     deleteNum = 1
@@ -146,9 +225,5 @@ module.exports = {
             })
     },
 
-    redirectView: (req, res, next) => {
-        const redirectPath = res.locals.redirect
-        if (redirectPath !== undefined) res.redirect(redirectPath)
-        else next()
-    }
 }
+*/

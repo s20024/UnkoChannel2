@@ -1,23 +1,28 @@
-<h2>Users Table</h2>
-<table>
-    <thead>
-    <tr>
-        <th>loginId</th>
-        <th>viewName</th>
-    </tr>
-    </thead>
-    <tbody>
-    <% users.forEach(user => { %>
-        <tr>
-            <td>
-                <a href="<%= `/users/${user._id}` %>">
-                    <%= user.loginId %>
-                </a>
-            </td>
-            <td>
-                <%= user.viewName %>
-            </td>
-        </tr>
-    <% }) %>
-    </tbody>
-</table>
+<div>
+    <div id="login_title">
+        <div id="login_title_title">
+            <h2>Login</h2>
+        </div>
+    </div>
+    <div id="login_contents">
+        <form action="/users/login" method="POST">
+            <label>Login ID:</label>
+            <input type="hidden" name="fromCategory" placeholder="Category" value="<%= fromCategory %>">
+            <input type="hidden" name="fromThread" placeholder="Thread" value="<%= fromThread %>">
+            <input type="text" name="loginId" placeholder="login ID" required autofocus><br/>
+            <label>Password:</label>
+            <input type="password" name="password" placeholder="Password" required><br/>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    <div id="login_under">
+        <div class="blank_one"></div>
+        <div class="blank_one"></div>
+        <div class="blank_one"></div>
+        <div>
+            <a href="/users/new?category=<%= fromCategory %>&thread=<%= fromThread %>">Create new Account</a>
+        </div>
+        <div class="blank_one"></div>
+        <div class="blank_one"></div>
+    </div>
+</div>
