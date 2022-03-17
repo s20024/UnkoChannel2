@@ -43,7 +43,9 @@
                 <div class="messages" id="<%= message.viewName %>">
                     <%# ごめんなさい。ここ汚いです。 %>
                     <strong class="message <%= (currentUser && message.user.toString() === currentUser._id.toString())? "your_message" : "" %>">
-                        <%= i %> : <%= message.userName %>
+                        <% const createDate = new Date(message.createdAt) %>
+                        <%= i %> : <%= message.userName %> : <%= `${createDate.getFullYear()}/${createDate.getMonth() + 1}/${createDate.getDate()}` %> : <span id="new_<%= message._id %>" class="new_span" style="opacity: 0;">new</span>
+                        <input id="<%= message._id %>" class="new_input" type="hidden" value="<%= createDate.getTime() %>">
                     </strong><br />
                     <% if (message.delete === 0) { %>
                         <%= message.content %>
@@ -54,7 +56,7 @@
                     <% } %>
 
                     <%# ここも汚いです。。。。。。；；%>
-                    <% if (currentUser && (message.user.toString() === currentUser._id.toString() || thread.user.toString() === currentUser._id.toString())) { %>
+                    <% if (message.delete === 0 && currentUser && (message.user.toString() === currentUser._id.toString() || thread.user.toString() === currentUser._id.toString())) { %>
                         <form class="delete_message_div" name="<%= message._id %>" method="POST" action="/<%= category._id %>/<%= thread._id %>/delete/<%= message._id %>">
                             <button type="submit" class="delete_message">delete</button>
                         </form>
@@ -66,3 +68,5 @@
     <div id="thread_contents_right">
     </div>
 </div>
+
+<script type="text/javascript" src="/js/new.js"></script>

@@ -1,6 +1,14 @@
 "use strict"
 
 /*
+こんにちは。　やらの課題です。。w
+
+難しいです。。。w
+デザイン崩れていると思いますが、、許してください。。w
+
+一回めの提出のコードより、少しはみやすくなっていると思います。
+あと、メモリも１回めよりは軽くなってると思います。。。
+無駄なコード等も一応削除しておきました。。。w
 */
 
 const express = require("express")
@@ -76,12 +84,21 @@ Category.findOne({title: list[0]})
             list.forEach(category => {
                 const categoryParams = { title: category }
                 Category.create(categoryParams)
-                    .then(() => {console.log("successfully")})
-                    .catch(() => {console.log("error")})
+                    .then(() => {
+                        console.log("successfully")
+                    })
+                    .catch(error => {
+                        console.log("error main->Category.create")
+                        throw error
+                    })
             })
         }
     })
+    .catch(error => {
+        console.log("error main->Category.findOne")
+        throw error
+    })
 
-const server = app.listen(app.get("port"), () => {
-    console.log(`Server funning at http://localhost:${app.get("port")}`)
+app.listen(app.get("port"), () => {
+    console.log(`Server starting at http://localhost:${app.get("port")}`)
 })

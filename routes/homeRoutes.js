@@ -11,6 +11,6 @@ router.get("/:categoryId/:threadId/new", homeController.messageNew, homeControll
 router.post("/:categoryId/:threadId/create", homeController.messageCreate, homeController.redirectView)
 router.get("/:categoryId/:threadId", homeController.thread, homeController.redirectView)
 router.get("/:categoryId", homeController.category, homeController.redirectView)
-router.get("/", homeController.index, homeController.indexView)
+router.get("/", homeController.index)
 
 module.exports = router

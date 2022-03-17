@@ -193,3 +193,7 @@ a:link, a:visited {
     border-radius: 5px;
     border: 2px solid darkred;
 }
+
+.new_span {
+    color: red;
+}

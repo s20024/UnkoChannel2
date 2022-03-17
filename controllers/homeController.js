@@ -5,16 +5,15 @@ const Thread = require("../models/thread")
 const Message = require("../models/message")
 
 module.exports = {
-    index: (req, res, next) => {
+    index: (req, res) => {
         Category.find({})
             .then(categories => {
                 res.locals.categories = categories
-                next()
+                res.render("index", {category: "", thread: ""})
             })
-            .catch(error => {next(error)})
-    },
-    indexView: (req, res) => {
-        res.render("index", {category: "", thread: ""})
+            .catch(error => {
+                throw error
+            })
     },
     category: (req, res, next) => {
         const categoryId = req.params.categoryId
