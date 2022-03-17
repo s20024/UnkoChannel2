@@ -3,7 +3,6 @@
 const Category = require("../models/category")
 const Thread = require("../models/thread")
 const Message = require("../models/message")
-const mongoose = require("mongoose")
 
 module.exports = {
     index: (req, res, next) => {
@@ -98,23 +97,33 @@ module.exports = {
         }
         Thread.create(threadParams)
             .then(thread => {
-                const messageParams = {
-                    content: req.body.fmessage,
-                    userName: viewName,
-                    user: req.body.creater,
-                    delete: 0,
-                    category: thread.category,
-                    thread: thread._id
+                if (thread) {
+                    const messageParams = {
+                        content: req.body.fmessage,
+                        userName: viewName,
+                        user: req.body.creater,
+                        delete: 0,
+                        category: thread.category,
+                        thread: thread._id
+                    }
+                    Message.create(messageParams)
+                        .then((message)=> {
+                            if (message) {
+                                res.locals.redirect = `/${categoryId}/${thread._id}`
+                                next()
+                            } else {
+                                res.locals.redirect = `/${categoryId}`
+                                next()
+                            }
+                        })
+                        .catch(error => {
+                            console.log("error homeController->threadCreate->Message.create")
+                            throw error
+                        })
+                } else {
+                    res.locals.redirect = `/${categoryId}`
+                    next()
                 }
-                Message.create(messageParams)
-                    .then((message)=> {
-                        res.locals.redirect = `/${categoryId}`
-                        next()
-                    })
-                    .catch(error => {
-                        console.log("error homeController->threadCreate->Message.create")
-                        throw error
-                    })
             })
             .catch(error => {
                 console.log("error homeController->threadCreate->Thread.create")
@@ -164,7 +173,7 @@ module.exports = {
                     thread: thread._id
                 }
                 Message.create(messageParams)
-                    .then((message)=> {
+                    .then(()=> {
                         res.locals.redirect = `/${categoryId}/${threadId}`
                         next()
                     })
@@ -175,6 +184,65 @@ module.exports = {
             })
             .catch(error => {
                 console.log("error homeController->messageCreate->Thread.findOne")
+                throw error
+            })
+    },
+    messageDelete: (req, res, next) => {
+        if (!req.user) {
+            res.locals.redirect = "/"
+            next()
+        }
+
+        const categoryId = req.params.categoryId
+        const threadId = req.params.threadId
+        const userId = req.user._id
+        const messageId = req.params.messageId
+
+        Thread.findOne({_id: threadId})
+            .then(thread => {
+                if (thread) {
+                    Message.findOne({_id: messageId})
+                        .then(message => {
+                            if (message) {
+                                // ここの比較式？がなんとなく汚いです。toStringで無理やり感満載ですね；；
+                                // これって普通こんな感じなんですか？もっと他のやり方があるんですか？、、、勉強不足です。。
+                                // toStringではなくて、toHexStringの方が正しいのかな？ParseIntがいいのかな？w、、、わかんないw
+                                if (thread.user.toString() === userId.toString() || message.user.toString() === userId.toString()) {
+                                    const deleteNum = (message.user.toString() === userId.toString())? 2: 1
+                                    const messageParams = {
+                                        content: "",
+                                        delete: deleteNum
+                                    }
+
+                                    Message.findByIdAndUpdate(messageId,{$set: messageParams})
+                                        .then(() => {
+                                            res.locals.redirect = `/${categoryId}/${threadId}`
+                                            next()
+                                        })
+                                        .catch(error => {
+                                            console.log("error homeController->messageDelete->Message.findByIdAndUpdate")
+                                            throw error
+                                        })
+                                } else {
+                                    res.locals.redirect = `/${categoryId}/${threadId}`
+                                    next()
+                                }
+                            } else {
+                                res.locals.redirect = `/${categoryId}/${threadId}`
+                                next()
+                            }
+                        })
+                        .catch(error => {
+                            console.log("error homeController->messageDelete->Message.findOne")
+                            throw error
+                        })
+                } else {
+                    res.locals.redirect = `/${categoryId}`
+                    next()
+                }
+            })
+            .catch(error => {
+                console.log("error homeController->messageDelete->Thread.findOne")
                 throw error
             })
     },

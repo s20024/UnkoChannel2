@@ -6,7 +6,7 @@ const homeController = require("../controllers/homeController")
 
 router.get("/:categoryId/new", homeController.threadNew, homeController.redirectView)
 router.post("/:categoryId/create", homeController.threadCreate, homeController.redirectView)
-// router.post("/:category/:thread/delete/:messageId", homeController.deleteMessage, homeController.redirectView)
+router.post("/:categoryId/:threadId/delete/:messageId", homeController.messageDelete, homeController.redirectView)
 router.get("/:categoryId/:threadId/new", homeController.messageNew, homeController.redirectView)
 router.post("/:categoryId/:threadId/create", homeController.messageCreate, homeController.redirectView)
 router.get("/:categoryId/:threadId", homeController.thread, homeController.redirectView)
