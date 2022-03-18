@@ -48,17 +48,6 @@ module.exports = {
         if (redirectPath) res.redirect(redirectPath)
         else next()
     },
-    show: (req, res, next) => {
-        const userId = req.params.id
-        User.findById(userId)
-            .then(user => {
-                res.locals.user = user
-                next()
-            })
-            .catch(error => {
-                console.log(`Error fetching user by ID: ${error.message}`)
-            })
-    },
     login: (req, res) => {
         res.locals.fromCategory = req.query.category || ""
         res.locals.fromThread = req.query.thread || ""

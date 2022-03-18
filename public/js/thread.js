@@ -14,7 +14,7 @@ for(let i = 0; i < inputs.length; i++) {
 
 localStorage.setItem(id, JSON.stringify(new Date().getTime()))
 
-
+// ここらへんのコードも汚いですね。。。。。
 const dialog = document.getElementById("dialog")
 const cancelButton = document.getElementById("cancel")
 const okButton = document.getElementById("ok")

@@ -11,8 +11,9 @@ module.exports = {
                 res.locals.categories = categories
                 res.render("index", {category: "", thread: ""})
             })
-            .catch(error => {
-                throw error
+            .catch(() => {
+                console.log("error homeController->index->Category.find")
+                res.render("error", {message: "なんらかのエラーが発生しました。"})
             })
     },
     category: (req, res, next) => {
@@ -27,11 +28,18 @@ module.exports = {
                             res.locals.threads = threads
                             res.render("category", {thread: ""})
                         })
-                        .catch(error => {throw(error)})
+                        .catch(() => {
+                            console.log("error homeController->category->Thread.find")
+                            res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
+                        })
                 } else {
                     res.locals.redirect = "/"
                     next()
                 }
+            })
+            .catch(() => {
+                console.log("error homeController->category->Category.findOne")
+                res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
             })
     },
     threadNoOption: (req, res, next) => {
@@ -69,27 +77,27 @@ module.exports = {
                                             }
                                         }
                                     })
-                                    .catch(error => {
+                                    .catch(() => {
                                         console.log("error homeController->thread->Message.find")
-                                        throw error
+                                        res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
                                     })
                             } else {
                                 res.locals.redirect = "/"
                                 next()
                             }
                         })
-                        .catch(error => {
+                        .catch(() => {
                             console.log(`error for homeController->thread->Thread.findOne`)
-                            throw(error)
+                            res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
                         })
                 } else {
                     res.locals.redirect = "/"
                     next()
                 }
             })
-            .catch(error => {
+            .catch(() => {
                 console.log("error homeController->thread->Category.find")
-                throw error
+                res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
             })
     },
     threadNew: (req, res, next) => {
@@ -103,9 +111,9 @@ module.exports = {
                     next()
                 }
             })
-            .catch(error => {
+            .catch(() => {
                 console.log("error homeController->threadNew->Category.findOne")
-                throw error
+                res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
             })
     },
     threadCreate: (req, res, next) => {
@@ -134,18 +142,18 @@ module.exports = {
                             res.locals.redirect = `/${categoryId}`
                             next()
                         })
-                        .catch(error => {
+                        .catch(() => {
                             console.log("error homeController->threadCreate->Message.create")
-                            throw error
+                            res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
                         })
                 } else {
                     res.locals.redirect = `/${categoryId}`
                     next()
                 }
             })
-            .catch(error => {
+            .catch(() => {
                 console.log("error homeController->threadCreate->Thread.create")
-                throw error
+                res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
             })
     },
     messageNew: (req, res, next) => {
@@ -163,18 +171,18 @@ module.exports = {
                                 next()
                             }
                         })
-                        .catch(error => {
+                        .catch(() => {
                             console.log("error homeController->messageNew->Thread.findOne")
-                            throw error
+                            res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
                         })
                 } else {
                     res.locals.redirect = "/"
                     next()
                 }
             })
-            .catch(error => {
+            .catch(() => {
                 console.log("error homeController->messageNew->Category.findOne")
-                throw error
+                res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
             })
     },
     messageCreate: (req, res, next) => {
@@ -201,19 +209,19 @@ module.exports = {
                                 res.locals.redirect = `/${categoryId}/${threadId}`
                                 next()
                             })
-                            .catch(error => {
+                            .catch(() => {
                                 console.log("error homeController->messageCreate->Thread.findByIdAndUpdate")
-                                throw error
+                                res.render("error", {message: "スレッドをアップデートできませんでした。", category: "", thread: ""})
                             })
                     })
-                    .catch(error => {
+                    .catch(() => {
                         console.log("error homeController->messageCreate->Message.create")
-                        throw error
+                        res.render("error", {message: "メッセージを作成することができませんでした。", category: "", thread: ""})
                     })
             })
-            .catch(error => {
+            .catch(() => {
                 console.log("error homeController->messageCreate->Thread.findOne")
-                throw error
+                res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
             })
     },
     messageDelete: (req, res, next) => {
@@ -248,9 +256,9 @@ module.exports = {
                                             res.locals.redirect = `/${categoryId}/${threadId}`
                                             next()
                                         })
-                                        .catch(error => {
+                                        .catch(() => {
                                             console.log("error homeController->messageDelete->Message.findByIdAndUpdate")
-                                            throw error
+                                            res.render("error", {message: "メッセージを削除できませんでした。", category: "", thread: ""})
                                         })
                                 } else {
                                     res.locals.redirect = `/${categoryId}/${threadId}`
@@ -261,18 +269,18 @@ module.exports = {
                                 next()
                             }
                         })
-                        .catch(error => {
+                        .catch(() => {
                             console.log("error homeController->messageDelete->Message.findOne")
-                            throw error
+                            res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
                         })
                 } else {
                     res.locals.redirect = `/${categoryId}`
                     next()
                 }
             })
-            .catch(error => {
+            .catch(() => {
                 console.log("error homeController->messageDelete->Thread.findOne")
-                throw error
+                res.render("error", {message: "Urlが間違ってると思われます。", category: "", thread: ""})
             })
     },
     redirectView: (req, res, next) => {
