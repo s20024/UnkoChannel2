@@ -128,7 +128,7 @@ module.exports = {
     delete: (req, res, next) => {
         const userId = req.params.userId
         if (!req.user || req.user._id !== userId) {
-            res.loclals.redirect = "/users"
+            res.locals.redirect = "/users"
             next()
         }
         User.findByIdAndRemove(userId)

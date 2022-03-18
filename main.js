@@ -16,6 +16,9 @@
 
 一応,
 課題のGoogleスライドショーの奴の機能は全て追加した。。。つもりです。w
+スレッド削除する機能はくらなくて大丈夫ですよね？
+
+ちょくちょく、コメントアウトでなんか書かれてますが、、、ごめんなさい。
 */
 
 const express = require("express")
@@ -31,7 +34,7 @@ const passport = require("passport")
 const User = require("./models/user")
 
 mongoose.Promise = global.Promise
-mongoose.connect("mongodb://0.0.0.0:27017/unko_channel_2_5")
+mongoose.connect("mongodb://0.0.0.0:27017/unko_channel_2")
     .then(() => {
         console.log("Successfully Connect MongoDb")
     })
