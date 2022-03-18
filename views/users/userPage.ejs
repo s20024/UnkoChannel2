@@ -1,4 +1,12 @@
 <h2><%= user.viewName %>メッセージを投稿したことのあるスレッド一覧です。</h2>
+<% if (loggedIn) { %>
+    <% if (currentUser._id.toString() === user._id.toString()) { %>
+        <%# conrirmとか知らんし。。dialogタグで頑張ってきたのに、、、、ww　まぁ、ここだけconfirm使用します。 %>
+        <a href="/users/delete/<%= currentUser._id %>?_method=DELETE" onclick="return confirm('削除してもあなたが投稿したメッセージやスレッドは削除されません。本当によろしいですか？')">
+            <h2>Delete</h2>
+        </a>
+    <% } %>
+<% }%>
 <% threads.forEach(thread => { %>
     <div class="category_thread_sort">
         <a href="/<%= thread.category %>/<%= thread._id %>/all">

@@ -44,7 +44,7 @@
                     <%# ごめんなさい。ここ汚いです。 %>
                     <strong class="message <%= (currentUser && message.user.toString() === currentUser._id.toString())? "your_message" : "" %>">
                         <% const createDate = new Date(message.createdAt) %>
-                        <%= message.number %> : <%= message.userName %> : <%= `${createDate.getFullYear()}/${createDate.getMonth() + 1}/${createDate.getDate()}` %> : <%= `${createDate.getHours()}時${createDate.getMinutes()}分${createDate.getSeconds()}秒`%> : <span id="new_time_<%= message._id %>" class="new_span" style="opacity: 0;">未読</span>
+                        <%= message.number %> : <a href="/users/userPage/<%= message.user %>"><%= message.userName %></a> : <%= `${createDate.getFullYear()}/${createDate.getMonth() + 1}/${createDate.getDate()}` %> : <%= `${createDate.getHours()}時${createDate.getMinutes()}分${createDate.getSeconds()}秒`%> : <span id="new_time_<%= message._id %>" class="new_span" style="opacity: 0;">未読</span>
                         <input id="time_<%= message._id %>" class="new_input" type="hidden" value="<%= createDate.getTime() %>">
                     </strong><br />
                     <% if (message.delete === 0) { %>

@@ -3,8 +3,9 @@
 const router = require("express").Router()
 const usersController = require("../controllers/userController")
 
-router.get("/", usersController.index, usersController.indexView)
+router.get("/", usersController.index)
 router.get("/userPage/:userId", usersController.userPage)
+router.delete("/delete/:userId", usersController.delete, usersController.redirectView)
 router.get("/new", usersController.new)
 router.post(
     "/create",

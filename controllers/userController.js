@@ -15,48 +15,52 @@ const getUserParams = body => {
 
 
 module.exports = {
-    index: (req, res, next) => {
+    index: (req, res) => {
         User.find()
             .then(users => {
-                res.locals.users = users
-                next()
+                res.render("users/index", {category: "", thread: "", users: users})
             })
-            .catch(error => {
-                console.log(`Error fetching users: ${error.message}`)
-                next(error)
+            .catch(() => {
+                console.log("error userController->index->User.find")
+                res.render("error", {message: "Urlが間違っています。", category: "", thread: ""})
             })
-    },
-    indexView: (req, res) => {
-        res.render("users/index", {category: "", thread: ""})
     },
     userPage: (req, res) => {
         const userId = req.params.userId
         User.findOne({_id: userId})
             .then(user => {
-                Message.find({user: userId})
-                    .sort({createdAt: 1})
-                    .then(messages => {
-                        const threadIds = []
-                        messages.forEach((message) => {
-                            const threadId = message.thread
-                            if (!threadIds.includes(threadId)) {
-                                threadIds.push({"_id": threadId})
+                if (user) {
+                    Message.find({user: userId})
+                        .sort({createdAt: 1})
+                        .then(messages => {
+                            if (messages.length === 0) {
+                                res.render("users/userPage", {category: "", thread: "", threads: [], user: user})
+                                return
                             }
+                            const threadIds = []
+                            messages.forEach((message) => {
+                                const threadId = message.thread
+                                if (!threadIds.includes(threadId)) {
+                                    threadIds.push({"_id": threadId})
+                                }
+                            })
+                            Thread.find({$or: threadIds})
+                                .sort({createdAt: -1})
+                                .then((threads) => {
+                                    res.render("users/userPage", {category: "", thread: "", threads: threads, user: user})
+                                })
+                                .catch(() =>{
+                                    console.log("error userController->userPage->Thread.findOne")
+                                    res.render("error", {message: "まだ一つもメッセージを投稿していません。", category: "", thread: ""})
+                                })
                         })
-                        Thread.find({$or: threadIds})
-                            .sort({createdAt: -1})
-                            .then((threads) => {
-                                res.render("users/userPage", {category: "", thread: "", threads: threads, user: user})
-                            })
-                            .catch(() =>{
-                                console.log("error userController->userPage->Thread.findOne")
-                                res.render("error", {message: "まだ一つもメッセージを投稿していません。", category: "", thread: ""})
-                            })
-                    })
-                    .catch(() => {
-                        console.log("error userController->userPage->Message.find")
-                        res.render("error", {message: "Urlが間違っています。", category: "", thread: ""})
-                    })
+                        .catch(() => {
+                            console.log("error userController->userPage->Message.find")
+                            res.render("error", {message: "Urlが間違っています。", category: "", thread: ""})
+                        })
+                } else {
+                    res.render("error", {message: "そのようなユーザーはおりません。", category: "", thread: ""})
+                }
             })
             .catch(() => {
                 console.log("error userController->userPage->User.findOne")
@@ -120,6 +124,21 @@ module.exports = {
         req.flash("success", "You have been logged out!")
         res.locals.redirect = "/"
         next()
+    },
+    delete: (req, res, next) => {
+        const userId = req.params.userId
+        if (!req.user || req.user._id !== userId) {
+            res.loclals.redirect = "/users"
+            next()
+        }
+        User.findByIdAndRemove(userId)
+            .then(() => {
+                res.locals.redirect = "/users"
+                next()
+            })
+            .catch(() => {
+                console.log("error userController->delete->User.findByIdAndRemove")
+                res.render("error", {message: "UserIdが間違っています。", category: "", thread: ""})
+            })
     }
-
 }

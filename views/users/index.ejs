@@ -1,0 +1,15 @@
+<h2 style="text-align: center">User一覧画面</h2>
+
+<% if (users !== undefined) { %>
+    <% users.forEach(user => { %>
+        <div class="category_thread_sort">
+            <a href="/users/userPage/<%= user._id %>">
+                <div class="category_thread" style="text-align: center">
+                    <div>
+                        <%= user.viewName %>
+                    </div>
+                </div>
+            </a>
+        </div>
+    <% }) %>
+<% } %>
