@@ -1,6 +1,8 @@
 "use strict"
 
 const User = require("../models/user")
+const Thread = require("../models/thread")
+const Message = require("../models/message")
 const passport = require("passport")
 const { check, sanitizeBody, validationResult } = require("express-validator")
 const getUserParams = body => {
@@ -26,6 +28,40 @@ module.exports = {
     },
     indexView: (req, res) => {
         res.render("users/index", {category: "", thread: ""})
+    },
+    userPage: (req, res) => {
+        const userId = req.params.userId
+        User.findOne({_id: userId})
+            .then(user => {
+                Message.find({user: userId})
+                    .sort({createdAt: 1})
+                    .then(messages => {
+                        const threadIds = []
+                        messages.forEach((message) => {
+                            const threadId = message.thread
+                            if (!threadIds.includes(threadId)) {
+                                threadIds.push({"_id": threadId})
+                            }
+                        })
+                        Thread.find({$or: threadIds})
+                            .sort({createdAt: -1})
+                            .then((threads) => {
+                                res.render("users/userPage", {category: "", thread: "", threads: threads, user: user})
+                            })
+                            .catch(() =>{
+                                console.log("error userController->userPage->Thread.findOne")
+                                res.render("error", {message: "まだ一つもメッセージを投稿していません。", category: "", thread: ""})
+                            })
+                    })
+                    .catch(() => {
+                        console.log("error userController->userPage->Message.find")
+                        res.render("error", {message: "Urlが間違っています。", category: "", thread: ""})
+                    })
+            })
+            .catch(() => {
+                console.log("error userController->userPage->User.findOne")
+                res.render("error", {message: "Urlが間違っています。", category: "", thread: ""})
+            })
     },
     new: (req, res) => {
         res.locals.fromCategory = req.query.category || ""

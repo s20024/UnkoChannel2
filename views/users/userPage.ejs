@@ -1,0 +1,16 @@
+<h2><%= user.viewName %>メッセージを投稿したことのあるスレッド一覧です。</h2>
+<% threads.forEach(thread => { %>
+    <div class="category_thread_sort">
+        <a href="/<%= thread.category %>/<%= thread._id %>/all">
+            <div class="category_thread" style="text-align: center">
+                <div>
+                    <%= thread.title %>
+                    <div>
+                        <% const updateDay = new Date(thread.updatedAt) %>
+                        Last Update:<%= `${updateDay.getFullYear()}/${updateDay.getMonth() + 1}/${updateDay.getDate()}` %>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+<% }) %>

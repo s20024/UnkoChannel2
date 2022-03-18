@@ -17,7 +17,11 @@
         <div>
             <% if (loggedIn) { %>
                 <div>
-                    Logged in
+                    <a href="/users/userPage/<%= currentUser._id %>">
+                        <div>
+                            Your Page
+                        </div>
+                    </a>
                     <a href="/users/logout">
                         <div>
                             Logout

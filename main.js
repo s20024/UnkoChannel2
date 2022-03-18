@@ -32,8 +32,13 @@ const User = require("./models/user")
 
 mongoose.Promise = global.Promise
 mongoose.connect("mongodb://0.0.0.0:27017/unko_channel_2_5")
-    .then(() => {console.log("Successfully Connect MongoDb")})
-    .catch(error => {throw error})
+    .then(() => {
+        console.log("Successfully Connect MongoDb")
+    })
+    .catch(error => {
+        console.log("error main->mongoose.connect")
+        throw error
+    })
 
 app.set("port", process.env.PORT || 3000)
 app.set("view engine", "ejs")

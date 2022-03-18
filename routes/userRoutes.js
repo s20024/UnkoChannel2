@@ -4,6 +4,7 @@ const router = require("express").Router()
 const usersController = require("../controllers/userController")
 
 router.get("/", usersController.index, usersController.indexView)
+router.get("/userPage/:userId", usersController.userPage)
 router.get("/new", usersController.new)
 router.post(
     "/create",
