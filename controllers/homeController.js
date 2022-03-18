@@ -34,9 +34,21 @@ module.exports = {
                 }
             })
     },
+    threadNoOption: (req, res, next) => {
+        const categoryId = req.params.categoryId
+        const threadId = req.params.threadId
+        res.locals.redirect = `/${categoryId}/${threadId}/all`
+        next()
+    },
     thread: (req, res, next) => {
         const categoryId = req.params.categoryId
         const threadId = req.params.threadId
+        const option = req.params.option
+
+        if (option !== "all" && isNaN(option)) {
+            res.locals.redirect = `/${categoryId}/${threadId}/all`
+            next()
+        }
 
         Category.findOne({_id: categoryId})
             .then(category => {
@@ -46,7 +58,16 @@ module.exports = {
                             if (thread) {
                                 Message.find({thread: threadId})
                                     .then(messages => {
-                                        res.render("thread", {category: category, thread: thread, messages: messages})
+                                        if (option === "all") {
+                                            res.render("thread", {category: category, thread: thread, messages: messages})
+                                        } else {
+                                            const optionNum = parseInt(option)
+                                            if (optionNum < thread.message) {
+                                                res.render("thread", {category: category, thread: thread, messages: messages.slice(thread.message - optionNum)})
+                                            } else {
+                                                res.render("thread", {category: category, thread: thread, messages: messages})
+                                            }
+                                        }
                                     })
                                     .catch(error => {
                                         console.log("error homeController->thread->Message.find")
