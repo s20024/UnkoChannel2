@@ -25,7 +25,6 @@ module.exports = {
                         .sort({updatedAt: -1})
                         .then(threads => {
                             res.locals.threads = threads
-                            console.log(threads)
                             res.render("category", {thread: ""})
                         })
                         .catch(error => {throw(error)})
