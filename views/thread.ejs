@@ -12,9 +12,9 @@
     </div>
     <div class="flex_center">
         <div class="blank_one flex_center">
-            <h3 id="view_all">view all</h3>
+            <h3 id="view_all"><a href="./all">view all</a></h3>
             <h3>/</h3>
-            <h3 id="view_50">view 50</h3>
+            <h3 id="view_50"><a href="./50">view 50</a></h3>
             <h3>/</h3>
             <% if (!currentUser) { %>
                 <a href="/users/login?category=<%= category._id %>&thread=<%= thread._id %>" id="view_chat">
@@ -44,8 +44,8 @@
                     <%# ごめんなさい。ここ汚いです。 %>
                     <strong class="message <%= (currentUser && message.user.toString() === currentUser._id.toString())? "your_message" : "" %>">
                         <% const createDate = new Date(message.createdAt) %>
-                        <%= message.number %> : <%= message.userName %> : <%= `${createDate.getFullYear()}/${createDate.getMonth() + 1}/${createDate.getDate()}` %> : <%= `${createDate.getHours()}時${createDate.getMinutes()}分${createDate.getSeconds()}秒`%> : <span id="new_<%= message._id %>" class="new_span" style="opacity: 0;">未読</span>
-                        <input id="<%= message._id %>" class="new_input" type="hidden" value="<%= createDate.getTime() %>">
+                        <%= message.number %> : <%= message.userName %> : <%= `${createDate.getFullYear()}/${createDate.getMonth() + 1}/${createDate.getDate()}` %> : <%= `${createDate.getHours()}時${createDate.getMinutes()}分${createDate.getSeconds()}秒`%> : <span id="new_time_<%= message._id %>" class="new_span" style="opacity: 0;">未読</span>
+                        <input id="time_<%= message._id %>" class="new_input" type="hidden" value="<%= createDate.getTime() %>">
                     </strong><br />
                     <% if (message.delete === 0) { %>
                         <%= message.content %>
@@ -57,8 +57,8 @@
 
                     <%# ここも汚いです。。。。。。；；%>
                     <% if (message.delete === 0 && currentUser && (message.user.toString() === currentUser._id.toString() || thread.user.toString() === currentUser._id.toString())) { %>
-                        <form class="delete_message_div" name="<%= message._id %>" method="POST" action="/<%= category._id %>/<%= thread._id %>/delete/<%= message._id %>">
-                            <button type="submit" class="delete_message">delete</button>
+                        <form id="delete_form_<%= message._id %>" class="delete_message_div" name="<%= message._id %>" method="POST" action="/<%= category._id %>/<%= thread._id %>/delete/<%= message._id %>">
+                            <div id="<%= message._id %>" value="<%= message._id %>" class="delete_message">delete</div>
                         </form>
                     <% } %>
                 </div>
@@ -69,4 +69,15 @@
     </div>
 </div>
 
-<script type="text/javascript" src="/js/new.js"></script>
+<dialog id="dialog">
+    メッセージを削除しますか？
+    <input id="id_dialog" type="hidden">
+    <input id="num_dialog" type="hidden">
+    <menu>
+        <button value="cancel" id="cancel">Cancel</button>
+        <button value="default" id="ok">Ok</button>
+    </menu>
+</dialog>
+
+
+<script type="text/javascript" src="/js/thread.js"></script>

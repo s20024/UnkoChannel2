@@ -9,9 +9,9 @@
             <label>Login ID:</label>
             <input type="hidden" name="fromCategory" placeholder="Category" value="<%= fromCategory %>">
             <input type="hidden" name="fromThread" placeholder="Thread" value="<%= fromThread %>">
-            <input type="text" name="loginId" placeholder="login ID" required autofocus><br/>
+            <input type="text" name="loginId" placeholder="login ID" pattern="^[0-9A-Za-z]+$" required autofocus><br/>
             <label>Password:</label>
-            <input type="password" name="password" placeholder="Password" required><br/>
+            <input type="password" name="password" placeholder="Password" pattern="^([a-zA-Z0-9]{8,})$" required><br/>
             <button type="submit">Login</button>
         </form>
     </div>

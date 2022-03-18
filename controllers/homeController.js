@@ -130,14 +130,9 @@ module.exports = {
                         thread: thread._id
                     }
                     Message.create(messageParams)
-                        .then((message)=> {
-                            if (message) {
-                                res.locals.redirect = `/${categoryId}/${thread._id}`
-                                next()
-                            } else {
-                                res.locals.redirect = `/${categoryId}`
-                                next()
-                            }
+                        .then(()=> {
+                            res.locals.redirect = `/${categoryId}`
+                            next()
                         })
                         .catch(error => {
                             console.log("error homeController->threadCreate->Message.create")
