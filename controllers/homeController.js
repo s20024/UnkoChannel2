@@ -95,7 +95,7 @@ module.exports = {
             title: req.body.title,
             user: req.body.creater,
             category: categoryId,
-            message: 0
+            message: 1
         }
         Thread.create(threadParams)
             .then(thread => {
@@ -104,6 +104,7 @@ module.exports = {
                         content: req.body.fmessage,
                         userName: viewName,
                         user: req.body.creater,
+                        number: 1,
                         delete: 0,
                         category: thread.category,
                         thread: thread._id
@@ -171,6 +172,7 @@ module.exports = {
                     userName: req.body.userName,
                     user: req.body.userId,
                     delete: 0,
+                    number: thread.message + 1,
                     category: thread.category,
                     thread: thread._id
                 }

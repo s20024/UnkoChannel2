@@ -13,6 +13,9 @@ const messageSchema = new Schema(
             type: String,
             required: true
         },
+        number: {
+            type: Number
+        },
         delete: {
             type: Number,
         },
